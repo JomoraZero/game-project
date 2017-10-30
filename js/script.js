@@ -23,7 +23,7 @@ var leftPressed = false;
 var brickRowCount = 5;
 var brickColumnCount = 10;
 var brickWidth = 80;
-var brickHeight = 20;
+var brickHeight = 30;
 var brickPadding = 10;
 var brickOffsetTop = 35;
 var brickOffsetLeft = 35;
@@ -77,6 +77,8 @@ function drawBricks() {
         }
     }
 }
+
+
 
 // DRAW
 function draw() {
