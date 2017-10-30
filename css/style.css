@@ -5,18 +5,22 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
-  background-color: #F7F5F0;
-}
-
-h1 {
-  color: #227BA8;
-  font-size: 40px;
-  padding: 30px 20px;
+  background-color: #EAFDE6;
   text-align: center;
 }
 
+h1 {
+  color: #519548;
+  font-size: 40px;
+  padding: 30px 20px;
+}
+
 canvas {
-  background: #E8C4B0;
+  background: #1B676B;
   display: block;
   margin: 0 auto;
+}
+
+.leaderboard {
+  margin: 50px;
 }
