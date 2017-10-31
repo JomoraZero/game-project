@@ -24,3 +24,13 @@ canvas {
 .leaderboard {
   margin: 50px;
 }
+
+.info {
+  display: flex;
+  justify-content: space-around;
+  color: #519548;
+}
+
+.info li {
+  list-style-type: none;
+}
