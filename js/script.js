@@ -17,6 +17,7 @@ var ballRadius = 10;
 var paddleHeight = 15;
 var paddleWidth = 100;
 var paddleX = (canvas.width-paddleWidth)/2;
+var paddleY = (canvas.height);
 
 // key movements
 var rightPressed = false;
@@ -33,8 +34,8 @@ var brickOffsetLeft = 35;
 
 // PowerUp parameters
 var powerRadius = 20;
-var powerRandomX = Math.floor(Math.random() * canvas.width);
-var powerY = -1250;
+var powerX = Math.floor(Math.random() * canvas.width);
+var powerY = -500;
 
 
 // brick builder
@@ -90,7 +91,7 @@ function drawBricks() {
 
 function drawPowerUps () {
   ctx.beginPath();
-  ctx.arc(powerRandomX, powerY, powerRadius, 0, Math.PI*2);
+  ctx.arc(powerX, powerY, powerRadius, 0, Math.PI*2);
   ctx.fillStyle = "#FA2A00";
   ctx.fill();
   ctx.closePath();
@@ -104,10 +105,11 @@ function draw() {
     drawBall();
     drawPaddle();
     drawScore();
+    drawPowerUps();
     drawBricks();
     collisionDetection();
     drawLives();
-    drawPowerUps();
+
 
     if(x + speedX > canvas.width-ballRadius || x + speedX < ballRadius) {
     speedX = -speedX;
@@ -135,12 +137,31 @@ function draw() {
         }
     }
 
+    console.log('powerX' + powerX);
+    console.log('powerY' + powerY);
+    console.log('paddleX' + paddleX);
+    console.log('paddleWidth' + paddleWidth);
+    console.log('paddleHeight' + paddleHeight);
+    // paddleGrowthActive
+    if (powerX > paddleX && powerX < paddleX + paddleWidth && powerY == paddleY) {
+        paddleWidth = paddleWidth + 75;
+        console.log(paddleWidth);
+    }
+
     // ball movement
     x += speedX;
     y += speedY;
 
     // powerup movement
-    powerY += 6;
+    powerY += 2;
+
+    // powerupResetPosition
+    if (powerY > 1000) {
+      powerY = -3000;
+      powerX = Math.floor(Math.random() * canvas.width);
+    }
+
+
 
     // paddle user movement
     if(rightPressed && paddleX < canvas.width-paddleWidth) {
