@@ -2,11 +2,25 @@
 var canvas = document.querySelector(".myCanvas");
 var ctx = canvas.getContext("2d");
 
-// ball starting position
+// main ball starting position
 var x = canvas.width/2;
 var y = canvas.height-30;
 
-// ball speed
+//extra ball starting position
+var extraX = Math.floor(Math.random() * canvas.width);
+var extraY = canvas.height/2;
+
+// extra ball 1 speed
+var extraBall1SpeedX = 3;
+var extraBall1SpeedY = -3;
+var extraRadius1 =  10;
+
+// extra ball 2 speed
+var extraBall2SpeedX = 3;
+var extraBall2SpeedY = -3;
+var extraRadius2 = 10;
+
+// main ball speed
 var speedX = 3;
 var speedY = -3;
 
@@ -53,7 +67,6 @@ var score = 0;
 // lives
 var lives = 3;
 
-
 // FUNCTIONS
 function drawBall() {
     ctx.beginPath();
@@ -92,9 +105,25 @@ function drawBricks() {
 function drawPowerUps () {
   ctx.beginPath();
   ctx.arc(powerX, powerY, powerRadius, 0, Math.PI*2);
-  ctx.fillStyle = "#FA2A00";
+  ctx.fillStyle = "#9F111B";
   ctx.fill();
   ctx.closePath();
+}
+
+function drawExtraBall1() {
+    ctx.beginPath();
+    ctx.arc(extraX, extraY, extraRadius1, 0, Math.PI*2);
+    ctx.fillStyle = "#AACCB1";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawExtraBall2() {
+    ctx.beginPath();
+    ctx.arc(extraX, extraY, extraRadius2, 0, Math.PI*2);
+    ctx.fillStyle = "#AACCB1";
+    ctx.fill();
+    ctx.closePath();
 }
 
 
@@ -109,8 +138,30 @@ function draw() {
     drawBricks();
     collisionDetection();
     drawLives();
+    drawExtraBall1();
+    drawExtraBall2();
 
+    // Extra Ball 1 wall collision
+    if(extraX + extraBall1SpeedX > canvas.width-extraRadius1 || extraX + extraBall1SpeedX < extraRadius1) {
+      extraBall1SpeedX = -extraBall1SpeedX;
+    }
+    if (extraY + extraBall1SpeedY < extraRadius1) {
+      extraBall1SpeedY =- extraBall1SpeedY;
+    }
 
+    // Extra Ball 2 wall collision
+    if(extraX + extraBall2SpeedX > canvas.width-extraRadius2 || extraX + extraBall2SpeedX < extraRadius2) {
+      extraBall2SpeedX = -extraBall2SpeedX;
+    }
+    if (extraY + extraBall2SpeedY < extraRadius2) {
+      extraBall1SpeedY =- extraBall1SpeedY;
+    } else if(extraY + extraBall2SpeedY > canvas.height-extraRadius2) {
+          if(extraX > paddleX && extraX < paddleX + paddleWidth) {
+              extraBall2SpeedY = -extraBall2SpeedY;
+          }
+        }
+
+        //main ball wall collision
     if(x + speedX > canvas.width-ballRadius || x + speedX < ballRadius) {
     speedX = -speedX;
     }
@@ -137,16 +188,19 @@ function draw() {
         }
     }
 
-    console.log('powerX' + powerX);
-    console.log('powerY' + powerY);
-    console.log('paddleX' + paddleX);
-    console.log('paddleWidth' + paddleWidth);
-    console.log('paddleHeight' + paddleHeight);
-    // paddleGrowthActive
+
+    // Alteration Activation
     if (powerX > paddleX && powerX < paddleX + paddleWidth && powerY == paddleY) {
-        paddleWidth = paddleWidth + 75;
-        console.log(paddleWidth);
-    }
+        // paddleWidth = paddleWidth + 100;
+        // paddleWidth = paddleWidth - 75;
+        // speedX = 7; speedY = -7;
+        // drawExtraBall1(); drawExtraBall2();
+
+      }
+
+    // extra balls movement
+    extraX += 4;
+    extraY += 4;
 
     // ball movement
     x += speedX;
