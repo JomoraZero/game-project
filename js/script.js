@@ -10,19 +10,11 @@ var y = canvas.height-30;
 var extraX = Math.floor(Math.random() * canvas.width);
 var extraY = canvas.height/2;
 
-// extra ball 1 speed
-var extraBall1SpeedX = 3;
-var extraBall1SpeedY = -3;
-var extraRadius1 =  10;
 
-// extra ball 2 speed
-var extraBall2SpeedX = 3;
-var extraBall2SpeedY = -3;
-var extraRadius2 = 10;
 
-// main ball speed
-var speedX = 3;
-var speedY = -3;
+// ball starting speed
+var speedX = 4;
+var speedY = -4;
 
 // ball size
 var ballRadius = 10;
@@ -65,7 +57,10 @@ for(c=0; c<brickColumnCount; c++) {
 var score = 0;
 
 // lives
-var lives = 3;
+var lives = 1;
+
+// time
+var time = 0;
 
 // FUNCTIONS
 function drawBall() {
@@ -110,58 +105,33 @@ function drawPowerUps () {
   ctx.closePath();
 }
 
-function drawExtraBall1() {
-    ctx.beginPath();
-    ctx.arc(extraX, extraY, extraRadius1, 0, Math.PI*2);
-    ctx.fillStyle = "#AACCB1";
-    ctx.fill();
-    ctx.closePath();
-}
 
-function drawExtraBall2() {
-    ctx.beginPath();
-    ctx.arc(extraX, extraY, extraRadius2, 0, Math.PI*2);
-    ctx.fillStyle = "#AACCB1";
-    ctx.fill();
-    ctx.closePath();
-}
+// time counter
+setInterval(function() {
+time ++;
+}, 1000
+);
 
 
 
 // DRAW
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPowerUps();
     drawBall();
     drawPaddle();
     drawScore();
-    drawPowerUps();
     drawBricks();
     collisionDetection();
     drawLives();
-    drawExtraBall1();
-    drawExtraBall2();
+    drawTime();
 
-    // Extra Ball 1 wall collision
-    if(extraX + extraBall1SpeedX > canvas.width-extraRadius1 || extraX + extraBall1SpeedX < extraRadius1) {
-      extraBall1SpeedX = -extraBall1SpeedX;
-    }
-    if (extraY + extraBall1SpeedY < extraRadius1) {
-      extraBall1SpeedY =- extraBall1SpeedY;
-    }
+    var isGameOver = false;
 
-    // Extra Ball 2 wall collision
-    if(extraX + extraBall2SpeedX > canvas.width-extraRadius2 || extraX + extraBall2SpeedX < extraRadius2) {
-      extraBall2SpeedX = -extraBall2SpeedX;
-    }
-    if (extraY + extraBall2SpeedY < extraRadius2) {
-      extraBall1SpeedY =- extraBall1SpeedY;
-    } else if(extraY + extraBall2SpeedY > canvas.height-extraRadius2) {
-          if(extraX > paddleX && extraX < paddleX + paddleWidth) {
-              extraBall2SpeedY = -extraBall2SpeedY;
-          }
-        }
 
-        //main ball wall collision
+
+
+        // ball wall collision
     if(x + speedX > canvas.width-ballRadius || x + speedX < ballRadius) {
     speedX = -speedX;
     }
@@ -174,8 +144,11 @@ function draw() {
         else {
           lives--;
           if(!lives) {
-
-            document.location.reload();
+            isGameOver = true;
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "#EAFDE6";
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER! You lasted ' + time + ' seconds and destroyed '+ score +' bricks!', canvas.width/2, 350);
           }
           else {
             x = canvas.width/2;
@@ -191,16 +164,9 @@ function draw() {
 
     // Alteration Activation
     if (powerX > paddleX && powerX < paddleX + paddleWidth && powerY == paddleY) {
-        // paddleWidth = paddleWidth + 100;
-        // paddleWidth = paddleWidth - 75;
-        // speedX = 7; speedY = -7;
-        // drawExtraBall1(); drawExtraBall2();
+        speedX *= 2; speedY *= -2;
 
       }
-
-    // extra balls movement
-    extraX += 4;
-    extraY += 4;
 
     // ball movement
     x += speedX;
@@ -211,7 +177,7 @@ function draw() {
 
     // powerupResetPosition
     if (powerY > 1000) {
-      powerY = -3000;
+      powerY = -1000;
       powerX = Math.floor(Math.random() * canvas.width);
     }
 
@@ -224,7 +190,10 @@ function draw() {
     else if(leftPressed && paddleX > 0) {
         paddleX -= 5;
     }
-  requestAnimationFrame(draw);
+
+    if (!isGameOver) {
+      requestAnimationFrame(draw);
+    }
 }
 
 // KEY MOVEMENTS
@@ -268,8 +237,10 @@ function collisionDetection() {
                     b.status = 0;
                     score++;
                     if(score == brickRowCount*brickColumnCount) {
-                        alert("YOU WIN, CONGRATULATIONS!");
-                        document.location.reload();
+                      ctx.font = "20px Arial";
+                      ctx.fillStyle = "#EAFDE6";
+                      ctx.textAlign = 'center';
+                      ctx.fillText("YOU WON IN " + time + " SECONDS, CONGRATULATIONS!", canvas.width/2, 350);
                     }
                 }
             }
@@ -287,6 +258,12 @@ function drawLives() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "#BEF202";
     ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}
+
+function drawTime() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#BEF202";
+  ctx.fillText("Time: " + time, (canvas.width/2) - 30, 20);
 }
 
 

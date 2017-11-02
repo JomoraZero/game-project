@@ -9,10 +9,18 @@ body {
   text-align: center;
 }
 
+.intro {
+  background-color: #1B676B;
+
+}
+
 h1 {
-  color: #519548;
+  color: #BEF202;
   font-size: 40px;
-  padding: 30px 20px;
+  padding: 25px 20px;
+}
+hr {
+  border: 2px solid #BEF202;
 }
 
 canvas {
@@ -28,9 +36,20 @@ canvas {
 .info {
   display: flex;
   justify-content: space-around;
-  color: #519548;
+  color: #BEF202;
 }
 
 .info li {
   list-style-type: none;
+  padding: 15px 0px;
+}
+
+.button {
+  padding: 100px 30px 100px 0;
+  display: block;
+  text-align: center;
+}
+
+.container {
+  padding: 100px 0px;
 }
