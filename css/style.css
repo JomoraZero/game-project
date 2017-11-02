@@ -27,6 +27,7 @@ canvas {
   background: #1B676B;
   display: block;
   margin: 0 auto;
+  cursor: none;
 }
 
 .leaderboard {

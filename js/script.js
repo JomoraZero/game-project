@@ -57,7 +57,7 @@ for(c=0; c<brickColumnCount; c++) {
 var score = 0;
 
 // lives
-var lives = 1;
+var lives = 3;
 
 // time
 var time = 0;
@@ -112,6 +112,11 @@ time ++;
 }, 1000
 );
 
+var gameOver = document.querySelector('.game-over');
+var winner = document.querySelector('.winner');
+var hitBrick = document.querySelector('.hit-brick');
+var hitWall = document.querySelector('.hit-wall');
+
 
 
 // DRAW
@@ -133,22 +138,27 @@ function draw() {
 
         // ball wall collision
     if(x + speedX > canvas.width-ballRadius || x + speedX < ballRadius) {
-    speedX = -speedX;
+      speedX = -speedX;
+      hitWall.play();
     }
     if(y + speedY < ballRadius) {
     speedY = -speedY;
+    hitWall.play();
   } else if(y + speedY > canvas.height-ballRadius) {
         if(x > paddleX && x < paddleX + paddleWidth) {
             speedY = -speedY;
+            hitBrick.play();
         }
         else {
           lives--;
           if(!lives) {
             isGameOver = true;
+            gameOver.play();
             ctx.font = "20px Arial";
             ctx.fillStyle = "#EAFDE6";
             ctx.textAlign = 'center';
             ctx.fillText('GAME OVER! You lasted ' + time + ' seconds and destroyed '+ score +' bricks!', canvas.width/2, 350);
+            ctx.fillText('Refresh Page to Try Again!', canvas.width/2, 380);
           }
           else {
             x = canvas.width/2;
@@ -159,6 +169,33 @@ function draw() {
           }
 
         }
+    }
+
+    // brick collision
+    function collisionDetection() {
+        for(c=0; c<brickColumnCount; c++) {
+            for(r=0; r<brickRowCount; r++) {
+                var b = bricks[c][r];
+                if(b.status == 1) {
+                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                        speedY = -speedY;
+                        hitBrick.play();
+                        b.status = 0;
+                        score++;
+
+                    }
+                }
+            }
+        }
+    }
+
+    if(score == brickRowCount*brickColumnCount) {
+      isGameOver = true;
+      winner.play();
+      ctx.font = "20px Arial";
+      ctx.fillStyle = "#EAFDE6";
+      ctx.textAlign = 'center';
+      ctx.fillText("YOU WON IN " + time + " SECONDS, CONGRATULATIONS!", canvas.width/2, 350);
     }
 
 
@@ -201,6 +238,8 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
 
+
+// paddle controls
 function mouseMoveHandler(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     if(relativeX > 0 && relativeX < canvas.width) {
@@ -226,27 +265,7 @@ function keyUpHandler(e) {
     }
 }
 
-// brick collision
-function collisionDetection() {
-    for(c=0; c<brickColumnCount; c++) {
-        for(r=0; r<brickRowCount; r++) {
-            var b = bricks[c][r];
-            if(b.status == 1) {
-                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-                    speedY = -speedY;
-                    b.status = 0;
-                    score++;
-                    if(score == brickRowCount*brickColumnCount) {
-                      ctx.font = "20px Arial";
-                      ctx.fillStyle = "#EAFDE6";
-                      ctx.textAlign = 'center';
-                      ctx.fillText("YOU WON IN " + time + " SECONDS, CONGRATULATIONS!", canvas.width/2, 350);
-                    }
-                }
-            }
-        }
-    }
-}
+
 
 function drawScore() {
     ctx.font = "16px Arial";
